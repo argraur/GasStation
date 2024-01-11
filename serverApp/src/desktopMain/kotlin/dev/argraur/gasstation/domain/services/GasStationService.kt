@@ -35,13 +35,11 @@ class GasStationService {
         if (pumps.size < _gasStationState.value.pumps) {
             fuel(carFlow)
         } else {
-            CoroutineScope(Job() + Dispatchers.Default).launch {
-                queueCar(carFlow)
-            }
+            queueCar(carFlow)
         }
     }
 
-    private suspend fun queueCar(carFlow: MutableStateFlow<Car>) {
+    private fun queueCar(carFlow: MutableStateFlow<Car>) {
         queue.add(carFlow)
 
         val place = queue.indexOf(carFlow)
@@ -58,7 +56,8 @@ class GasStationService {
         carFlow.update {
             it.copy(
                 id = if (carFlow.value.id == -1) ++id else carFlow.value.id,
-                status = CarStatus.FUELING
+                status = CarStatus.FUELING,
+		moneySpent = _gasStationState.value.pricePerLiter * it.fuelWanted
             )
         }
 
@@ -70,14 +69,13 @@ class GasStationService {
 
         println("Car ${carFlow.value.id} assigned to a pump!")
         val fuel = carFlow.value.fuelWanted
-        for (i in 0..ceil(fuel).toInt()) {
-            delay(200)
+        for (i in 0..fuel.toInt()) {
+            delay(500)
             carFlow.update {
                 it.copy(
                     id = if (it.id == -1) ++id else it.id,
                     status = CarStatus.FUELING,
-                    fueled = it.fueled + 1,
-                    moneySpent = carFlow.value.moneySpent + _gasStationState.value.pricePerLiter
+                    fueled = it.fueled + 1
                 )
             }
         }
@@ -111,14 +109,14 @@ class GasStationService {
             names.add(it.key)
             spent += it.value
         }
-        delay(1000)
+        delay(3000)
         carFlow.update { it.copy(status = CarStatus.STOCKED_UP, snacks = names, moneySpent = carFlow.value.moneySpent + spent) }
         delay(500)
     }
 
     private suspend fun toiletBreak(carFlow: MutableStateFlow<Car>) {
         carFlow.update { it.copy(status = CarStatus.DRIVER_ON_TOILET_BREAK) }
-        delay(2000)
+        delay(10000)
     }
 
     private suspend fun payment(carFlow: MutableStateFlow<Car>) {

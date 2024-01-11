@@ -22,7 +22,7 @@ fun main() {
     }
     application {
         KoinContext {
-            Window(onCloseRequest = ::exitApplication) {
+            Window(onCloseRequest = ::exitApplication, title = "Заправочка") {
                 App()
             }
         }

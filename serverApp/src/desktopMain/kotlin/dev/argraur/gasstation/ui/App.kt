@@ -75,7 +75,6 @@ fun App(viewModel: AppViewModel = koinInject()) {
     LaunchedEffect(carFlows) {
         observingJobs.forEach { it.cancel() }
         carFlows.forEach { carFlow ->
-            println(carFlow.value.id)
             val job = Job()
             observingJobs.add(job)
             CoroutineScope(job + Dispatchers.Default).launch {

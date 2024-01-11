@@ -60,9 +60,9 @@ kotlin {
             val linuxMain by getting {
                 dependsOn(unixMain)
             }
-            val macosMain by getting {
-                dependsOn(unixMain)
-            }
+            //val macosMain by getting {
+            //    dependsOn(unixMain)
+            //}
         }
     }
 }

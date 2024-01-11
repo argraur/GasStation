@@ -24,12 +24,11 @@ fun main(engine: HttpClientEngineFactory<HttpClientEngineConfig>) {
     }
 
     runBlocking {
-        client.webSocket(method = HttpMethod.Get, host = "127.0.0.1", port = 8080, path = "/") {
-            val random = Random(time(null))
+        client.webSocket(method = HttpMethod.Get, host = "172.25.160.1", port = 8080, path = "/") {
             sendSerialized(FuelRequest(
-                fuel = random.nextInt(1, 50),
-                toilet = random.nextBoolean(),
-                snacks = random.nextBoolean()
+                fuel = 5,
+                toilet = false,
+                snacks = false
             ))
             for (frame in incoming) {
                 frame as? Frame.Text ?: continue
